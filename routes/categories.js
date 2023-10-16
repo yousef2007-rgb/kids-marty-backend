@@ -1,5 +1,5 @@
 const router = require("express").Router();
-const { Category, categorySchema, validateCategory } = require("../model/categories");
+const { Category, validateCategory } = require("../model/categories");
 const asyncMiddleware = require("../middleware/asyncMiddleware")
 const _ = require("lodash")
 const admin = require("../middleware/admin");
@@ -42,6 +42,7 @@ router.put("/:id", auth, admin, asyncMiddleware(async (req, res) => {
 router.delete("/:id", auth, admin, asyncMiddleware(async (req, res) => {
     const category = await Category.findByIdAndRemove(req.params.id);
     if (!category) return res.status(404).send("no such category found");
+
     res.send(category)
 }))
 

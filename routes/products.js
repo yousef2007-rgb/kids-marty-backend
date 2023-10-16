@@ -14,9 +14,6 @@ router.post("/", auth, admin, asyncMiddleware(async (req, res) => {
     const { error } = validateProduct(req.body);
     if (error) return res.status(401).send(error.details[0].message);
 
-    const category = await Category.findById(req.body.category)
-    const brand = await Brand.findById(req.body.brand)
-
     const newProduct = new Product(req.body);
     await newProduct.save()
 
@@ -26,13 +23,15 @@ router.post("/", auth, admin, asyncMiddleware(async (req, res) => {
 router.get("/", asyncMiddleware(async (req, res) => {
     const products = await Product
         .find()
+        .populate(['category', 'brand'])
         .skip(req.query.skip || req.query.skip != 0 ? req.query.skip - 1 * req.query.limit : 0)
         .limit(req.query.limit ? req.query.limit : null);
     res.send(products)
 }))
 
 router.get("/:id", asyncMiddleware(async (req, res) => {
-    const product = await Product.findById(req.params.id);
+    const product = await Product.findById(req.params.id) .populate(['category', 'brand'])
+;
     if (!product) return res.status(404).send("no such product found");
     res.send(product)
 }))
@@ -43,9 +42,6 @@ router.put("/:id", auth, admin, asyncMiddleware(async (req, res) => {
 
     const { error } = validateProduct(req.body);
     if (error) return res.status(401).send(error.details[0].message);
-
-    const category = await Category.findById(req.body.category)
-    const brand = await Brand.findById(req.body.brand)
 
     product.set(req.body);
     await product.save()

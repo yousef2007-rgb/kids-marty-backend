@@ -27,6 +27,7 @@ const productSchema = new mongoose.Schema({
     category: { type: mongoose.Schema.ObjectId, ref: "Category", required: true },
     brand: { type: mongoose.Schema.ObjectId, ref: "Brand", required: true },
     isPublished: { type: Boolean, default: true },
+    isInStock: { type: Boolean, default: true },
     dimensions: { type: [String] },
     ageRange: {
         type: String,
@@ -55,6 +56,7 @@ const validateProduct = reqBody => {
         category: Joi.string(),
         brand: Joi.string(),
         isPublished: Joi.boolean(),
+        isInStock: Joi.boolean(),
         varients: Joi.array().items(Joi.object({
             title: Joi.string().required(),
             discription: Joi.string().required(),
