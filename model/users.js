@@ -6,7 +6,7 @@ const userSchema = new mongoose.Schema({
     username: { type: String, required: true, min: 2, max: 20 },
     email: { type: String, required: true, min: 2 },
     password: { type: String, required: true, min: 2 },
-    phone: { type: String, min: 10, max: 10 },
+    phone: { type: String, min: 9, max: 9 },
     city: {
         type: String, enum: [
             "Amman",
@@ -42,7 +42,7 @@ const validateUser = (reqBody) => {
         password: Joi.string()
             .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
         repeat_password: Joi.ref('password'),
-        phone: Joi.string().length(10).pattern(/^[0-9]+$/).required(),
+        phone: Joi.string().length(9).pattern(/^[0-9]+$/).required(),
         city: Joi.string().required(),
         location: Joi.string().required(),
         age: Joi.number().required()
