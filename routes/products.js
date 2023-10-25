@@ -20,11 +20,25 @@ router.post("/", auth, admin, asyncMiddleware(async (req, res) => {
 }));
 
 router.get("/", asyncMiddleware(async (req, res) => {
-    const products = await Product
-        .find()
-        .populate(['category', 'brand'])
-        .skip(req.query.skip || req.query.skip != 0 ? req.query.skip - 1 * req.query.limit : 0)
-        .limit(req.query.limit ? req.query.limit : null);
+    let products = [];
+    if (req.query.limitPerCategory) {
+        const categories = await Category.find();
+        for (let i = 0; i < categories.length; i++) {
+            const productGroups = await Product
+                .find({ category: categories[i]._id })
+                .limit(req.query.limitPerCategory)
+            if (productGroups) {
+                console.log(productGroups)
+                products.push({category:categories[i], products:productGroups});
+            }
+        }
+    } else {
+        products = await Product
+            .find()
+            .populate(['category', 'brand'])
+            .skip(req.query.skip || req.query.skip != 0 ? req.query.skip - 1 * req.query.limit : 0)
+            .limit(req.query.limit ? req.query.limit : null);
+    }
     res.send(products)
 }))
 
