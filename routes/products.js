@@ -29,7 +29,7 @@ router.get("/", asyncMiddleware(async (req, res) => {
                 .limit(req.query.limitPerCategory)
             if (productGroups) {
                 console.log(productGroups)
-                products.push({category:categories[i], products:productGroups});
+                products.push({ category: categories[i], products: productGroups });
             }
         }
     } else {
@@ -41,6 +41,37 @@ router.get("/", asyncMiddleware(async (req, res) => {
     }
     res.send(products)
 }))
+
+router.get("/category/:id", asyncMiddleware(async (req, res) => {
+    const products = await Product.find({ category: req.params.id })
+        .skip(req.query.skip || req.query.skip != 0 ? req.query.skip - 1 * req.query.limit : 0)
+        .limit(req.query.limit ? req.query.limit : null)
+        .populate(['category', 'brand'])
+        ;
+
+    res.send(products);
+}));
+
+router.get("/brand/:id", asyncMiddleware(async (req, res) => {
+    const products = await Product.find({ brand: req.params.id })
+        .skip(req.query.skip || req.query.skip != 0 ? req.query.skip - 1 * req.query.limit : 0)
+        .limit(req.query.limit ? req.query.limit : null)
+        .populate(['category', 'brand'])
+        ;
+
+    res.send(products);
+}));
+
+router.get("/ageRange/:ageRange", asyncMiddleware(async (req, res) => {
+    console.log(req.params.ageRange)
+    const products = await Product.find({ ageRange: req.params.ageRange })
+        .skip(req.query.skip || req.query.skip != 0 ? req.query.skip - 1 * req.query.limit : 0)
+        .limit(req.query.limit ? req.query.limit : null)
+        .populate(['category', 'brand'])
+        ;
+
+    res.send(products);
+}));
 
 router.get("/:id", asyncMiddleware(async (req, res) => {
     const product = await Product.findById(req.params.id).populate(['category', 'brand'])

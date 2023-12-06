@@ -9,7 +9,7 @@ const brandSchema = new mongoose.Schema({
     discription_ar: { type: String, },
     keywords: { type: String },
     imageUrl: { type: String, required: true },
-    lable:{type:String, required: true }
+    lable: { type: String, required: true }
 });
 
 const Brand = mongoose.model("Brand", brandSchema);
