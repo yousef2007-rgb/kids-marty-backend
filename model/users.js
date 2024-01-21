@@ -40,7 +40,7 @@ const validateUser = (reqBody) => {
         username: Joi.string().required().min(2).max(20),
         email: Joi.string().required().min(2).email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
         password: Joi.string()
-            .pattern(new RegExp('^[a-zA-Z0-9]{3,30}$')).required(),
+            .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$')).required(),
         repeat_password: Joi.ref('password'),
         phone: Joi.string().length(9).pattern(/^[0-9]+$/).required(),
         city: Joi.string().required(),

@@ -16,7 +16,7 @@ router.post("/", asyncMiddleware(async (req, res) => {
     if (error) return res.status(400).send(error.details[0].message);
 
     const user = await User.findOne({ email: req.body.email });
-    if (user) return res.status(501).send("user already exists");
+    if (user) return res.status(400).send("user already exists");
 
     const salt = await bcrypt.genSalt(10);
     const hashedPassword = await bcrypt.hash(req.body.password, salt);
@@ -29,7 +29,7 @@ router.post("/", asyncMiddleware(async (req, res) => {
     await newUser.save();
 
     const token = jwt.sign({ _id: newUser._id, isAdmin: newUser.isAdmin }, process.env.JWT_KEY);;
-    res.header("x-web-token", token).send(_.pick(newUser, ["username", "email"]))
+    res.send(token)
 }))
 
 module.exports = router;
