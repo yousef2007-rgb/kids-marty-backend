@@ -27,14 +27,18 @@ const userSchema = new mongoose.Schema({
     location: { type: String, required: true },
     age: { type: Number, min: 0, max: 100 },
     isAdmin: { type: Boolean, default: false },
-    OTP: { type: String }
 });
+
+const codeSchema = new mongoose.Schema({
+    code: { type: Number }
+})
 
 userSchema.methods.generateAuthToken = function () {
     return jwt.sign({ _id: this._id }, process.env.JWT_KEY);
 }
 
 const User = mongoose.model("User", userSchema);
+const Code = mongoose.model("Code", codeSchema);
 
 const validateUser = (reqBody) => {
     const schema = Joi.object({
@@ -46,7 +50,9 @@ const validateUser = (reqBody) => {
         phone: Joi.string().length(9).pattern(/^[0-9]+$/).required(),
         city: Joi.string().required(),
         location: Joi.string().required(),
-        age: Joi.number().required()
+        age: Joi.number().required(),
+        code: Joi.number(),
+        id: Joi.string(),
     });
 
     return schema.validate(reqBody);
@@ -65,5 +71,6 @@ module.exports = {
     userSchema,
     User,
     validateUser,
-    validateAuth
+    validateAuth,
+    Code
 }
