@@ -26,7 +26,8 @@ const userSchema = new mongoose.Schema({
     },
     location: { type: String, required: true },
     age: { type: Number, min: 0, max: 100 },
-    isAdmin: { type: Boolean, default: false }
+    isAdmin: { type: Boolean, default: false },
+    OTP: { type: String }
 });
 
 userSchema.methods.generateAuthToken = function () {

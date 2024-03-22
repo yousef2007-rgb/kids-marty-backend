@@ -8,6 +8,7 @@ const auth = require("../middleware/auth");
 const XLSX = require("xlsx");
 const multer = require("multer")
 const object = require("@hapi/joi/lib/types/object");
+const mail = require("../email/index");
 
 router.post("/", auth, admin, asyncMiddleware(async (req, res) => {
     const { error } = validateProduct(req.body);
@@ -106,26 +107,26 @@ router.post("/excel/upload", upload.single('file'), asyncMiddleware(async (req, 
     const file = XLSX.readFile(reqData.path);
     const data = file.Sheets.Sheet1;
     const newProducts = [];
-    let column = 1;
+    let column = 2;
     while (data[`A${column}`]) {
         let newProduct = null;
         const product = {
-            title: data["A" + column].v,
-            discription: data["B" + column].v,
-            lable: data["C" + column].v,
-            keywords: data["D" + column].v,
-            title_ar: data["E" + column].v,
-            discription_ar: data["F" + column].v,
-            imagesUrls: data["G" + column].v.split(","),
-            online_price: data["H" + column].v,
-            wholesale_price: data["I" + column].v,
-            discount: data["J" + column].v,
-            imageUrl: data["K" + column].v,
-            category: data["L" + column].v,
-            brand: data["M" + column].v,
+            title: data["A" + column] != undefined ? data["A" + column].v : "",
+            discription: data["B" + column] != undefined ? data["B" + column].v : "",
+            lable: data["C" + column] != undefined ? data["C" + column].v : "",
+            keywords: data["D" + column] != undefined ? data["D" + column].v : "",
+            title_ar: data["E" + column] != undefined ? data["E" + column].v : "",
+            discription_ar: data["F" + column] != undefined ? data["F" + column].v : "",
+            imagesUrls: data["G" + column] != undefined ? data["G" + column].v.split(",") : [],
+            online_price: data["H" + column] != undefined ? data["H" + column].v : "",
+            wholesale_price: data["I" + column] != undefined ? data["I" + column].v : "",
+            discount: data["J" + column] != undefined ? data["J" + column].v : "",
+            imageUrl: data["K" + column] != undefined ? data["K" + column].v : "public/placeholder.jpg",
+            category: data["L" + column] != undefined ? data["L" + column].v : "",
+            brand: data["M" + column] != undefined ? data["M" + column].v : "",
             isPublished: data["N" + column].v == 0 ? false : true,
-            dimensions: data["O" + column].v.split(","),
-            ageRange: data["P" + column].v
+            dimensions: data["O" + column] != undefined ? data["O" + column].v.split(",") : [],
+            ageRange: data["P" + column] != undefined ? data["P" + column].v : ""
         }
 
 

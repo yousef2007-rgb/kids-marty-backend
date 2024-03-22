@@ -42,7 +42,7 @@ const validateProduct = reqBody => {
     const schema = Joi.object({
         title: Joi.string().required(),
         discription: Joi.string().required(),
-        lable: Joi.string().required(),
+        lable: Joi.alternatives(Joi.string(), Joi.number()).required(),
         keywords: Joi.string(),
         title_ar: Joi.string().required(),
         discription_ar: Joi.string(),

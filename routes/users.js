@@ -4,7 +4,9 @@ const bcrypt = require("bcrypt");
 const jwt = require("jsonwebtoken");
 const _ = require("lodash");
 const auth = require("../middleware/auth");
+const speakeasy = require('speakeasy');
 const { User, validateUser } = require("../model/users")
+
 
 router.get("/me", auth, asyncMiddleware(async (req, res) => {
     const user = await User.findById(req.user._id);
@@ -12,6 +14,8 @@ router.get("/me", auth, asyncMiddleware(async (req, res) => {
 }))
 
 router.post("/", asyncMiddleware(async (req, res) => {
+    const secret = speakeasy.generateSecret({ length: 20 });
+
     const { error } = validateUser(req.body);
     if (error) return res.status(400).send(error.details[0].message);
 
@@ -23,7 +27,7 @@ router.post("/", asyncMiddleware(async (req, res) => {
 
     const newUser = new User({
         ..._.pick(req.body, ["username", "email", "city", "location", "age", "phone"]),
-        password: hashedPassword
+        password: hashedPassword,
     });
 
     await newUser.save();
