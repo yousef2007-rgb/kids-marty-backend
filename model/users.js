@@ -43,14 +43,18 @@ const Code = mongoose.model("Code", codeSchema);
 const validateUser = (reqBody) => {
     const schema = Joi.object({
         username: Joi.string().required().min(2).max(20),
-        email: Joi.string().required().min(2).email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+        email: Joi.string().required().min(2).email({ minDomainSegments: 2 }),
         password: Joi.string()
-            .pattern(new RegExp('^(?=.*[a-z])(?=.*[A-Z])(?=.*[0-9]).{8,}$')).required(),
+            .pattern(new RegExp('^(?=.*[a-z])(?=.*[0-9]).{8,}$'))
+            .required()
+            .messages({
+                "string.pattern.base": "Password must contain at least one lowercase letter, and one number and at least 8 characters long."
+            }),
         repeat_password: Joi.ref('password'),
         phone: Joi.string().length(9).pattern(/^[0-9]+$/).required(),
         city: Joi.string().required(),
         location: Joi.string().required(),
-        age: Joi.number().required(),
+        age: Joi.number().required().min(10).max(200),
         code: Joi.number(),
         id: Joi.string(),
     });
@@ -60,7 +64,7 @@ const validateUser = (reqBody) => {
 
 const validateAuth = (reqBody) => {
     const schema = Joi.object({
-        email: Joi.string().required().min(2).email({ minDomainSegments: 2, tlds: { allow: ['com', 'net'] } }),
+        email: Joi.string().required().min(2).email({ minDomainSegments: 2, }),
         password: Joi.string().required().min(2),
     });
 
